@@ -9,20 +9,25 @@
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <Rectangle Grid.Column="0" Stroke="Black"/>
-            <Rectangle Grid.Column="2" Stroke="Black"/>
-            <Image x:Name="imageA" Grid.Column="0" Margin="1" Source="Images/einstein.bmp"/>
-            <Image x:Name="imageB" Grid.Column="2" Margin="1" Source="Images/marilyn.bmp"/>
+            <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1">
+                <Image x:Name="imageA" Source="Images/einstein.bmp"/>
+            </Border>
+            <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1">
+                <Image x:Name="imageB" Source="Images/marilyn.bmp"/>
+            </Border>
         </Grid>
-        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,172,0,0" Height="152" Width="303">
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,172,0,0" Height="152" Width="314">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <Rectangle Grid.Column="0" Stroke="Black" Margin="0,0,0,0"/>
-            <Rectangle Grid.Column="1" Stroke="Black" Margin="-1,0,0,0"/>
-            <Image x:Name="imageC" Grid.Column="0" Margin="1,1,1,1" Source="Images/einstein.bmp"/>
-            <Image x:Name="imageD" Grid.Column="1" Margin="0,1,1,1" Source="Images/marilyn.bmp"/>
+            <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1">
+                <Image x:Name="imageC"/>
+            </Border>
+            <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1">
+                <Image x:Name="imageD"/>
+            </Border>
         </Grid>
     </Grid>
 </Window>
