@@ -22,7 +22,45 @@ namespace HybridImage
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Constants
+
+        #endregion
+
         #region Variables
+
+        /// <summary>
+        /// Names of image-pairs. 5 pairs (10 image in total).
+        /// </summary>
+        private string[][] imagePairs = new string[][]
+        {
+            new string[] {"bicycle.bmp", "motorcycle.bmp" },
+            new string[] {"cat.bmp", "dog.bmp" },
+            new string[] {"bird.bmp", "fish.bmp" },
+            new string[] {"einstein.bmp", "marilyn.bmp" },
+            new string[] {"plane.bmp", "submarine.bmp" },
+        };
+
+        /// <summary>
+        /// Low-pass filter (smooth image that will appear from a far distance).
+        /// </summary>
+        private IplImage image1;
+        /// <summary>
+        /// High-pass filter (sharp image that will appear from a near distance).
+        /// </summary>
+        private IplImage image2;
+        /// <summary>
+        /// Hybrid image.
+        /// </summary>
+        private IplImage hybridImage;
+        /// <summary>
+        /// Which image-pair is selected.
+        /// </summary>
+        private int selectedPairsIndex;
+
+        /// <summary>
+        /// Guassian matrix/template used to apply template convolution to the images (Guassian smoothing).
+        /// </summary>
+        private double[,] convolutionTemplate;
 
         #endregion
 
@@ -47,8 +85,39 @@ namespace HybridImage
         #region Methods
 
         private void Initialize()
-        {            
-            
+        {
+            convolutionTemplate = new double[,]
+            {
+                { 0.002, 0.013, 0.022, 0.013, 0.002 },
+                { 0.013, 0.060, 0.098, 0.060, 0.013 },
+                { 0.022, 0.098, 0.162, 0.098, 0.022 },
+                { 0.013, 0.060, 0.098, 0.060, 0.013 },
+                { 0.002, 0.013, 0.022, 0.013, 0.002 },
+            };
+
+            selectedPairsIndex = 0;
+            LoadImage();
+        }
+
+        private void LoadImage()
+        {
+            string source1 = String.Format(@"Images/{0}", imagePairs[selectedPairsIndex][0]);
+            string source2 = String.Format(@"Images/{0}", imagePairs[selectedPairsIndex][1]);
+            //source1 = System.IO.Path.Combine(folder, source1);
+            //source1 = System.IO.Path.Combine(folder, source2);
+
+            image1 = new IplImage(source1);
+            image2 = new IplImage(source2);
+        }
+
+        private void Convolution()
+        {
+            // H = I1 · G1 + I2 ·(1 − G2),
+            // H: Hybrid Image
+            // I1: image 1
+            // I2: image 2
+            // G1: gaussian low-pass filter
+            // 1-G2: gaussian high-pass filter
         }
 
         private void TryOne()
