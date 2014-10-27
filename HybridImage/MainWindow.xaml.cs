@@ -68,6 +68,7 @@ namespace HybridImage
                 using (CvWindow window = new CvWindow(image))
                 {
                     CvWindow.WaitKey();
+
                 }
             }
         }
