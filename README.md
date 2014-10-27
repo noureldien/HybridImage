@@ -1,0 +1,1 @@
+Project for the coursework of Computer Vision subject, MSc program, Soton
