@@ -10,10 +10,10 @@
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1">
-                <Image x:Name="imageA" Source="Images/einstein.bmp"/>
+                <Image x:Name="imageView1" Source="Images/einstein.bmp"/>
             </Border>
             <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1">
-                <Image x:Name="imageB" Source="Images/marilyn.bmp"/>
+                <Image x:Name="imageView2" Source="Images/marilyn.bmp"/>
             </Border>
         </Grid>
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,172,0,0" Height="152" Width="314">
@@ -23,11 +23,12 @@
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1">
-                <Image x:Name="imageC"/>
+                <Image x:Name="imageView3"/>
             </Border>
             <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1">
-                <Image x:Name="imageD"/>
+                <Image x:Name="imageView4"/>
             </Border>
         </Grid>
+        <Button x:Name="buttonStart" Content="Start" HorizontalAlignment="Left" Margin="329,304,0,0" VerticalAlignment="Top" Width="75" Click="ButtonStart_Click"/>
     </Grid>
 </Window>
