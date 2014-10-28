@@ -1,8 +1,19 @@
 ﻿<Window x:Name="windowMain" x:Class="HybridImage.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Hybrid Image" Height="380" Width="525" Loaded="WindowMain_Loaded">
+        xmlns:t="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="Hybrid Image" Height="470" Width="525"
+        Loaded="WindowMain_Loaded" Closing="WindowMain_Closing">
     <Grid>
+        <GroupBox x:Name="groupBoxSearchType" Header="Search Type" HorizontalAlignment="Left" Margin="329,6,0,0" VerticalAlignment="Top" Height="156" Width="153">
+            <StackPanel>
+                <RadioButton Tag="1" GroupName="SearchType" Content="marilyn + einstein" IsChecked="True" Margin="10,15,0,5" Click="RadioButton_Click"/>
+                <RadioButton Tag="2" GroupName="SearchType" Content="motorcycle + bicycle" Margin="10,5,0,5" Click="RadioButton_Click"/>
+                <RadioButton Tag="3" GroupName="SearchType" Content="dog + cat" Margin="10,5,0,5" Click="RadioButton_Click" />
+                <RadioButton Tag="4" GroupName="SearchType" Content="bird + plane" Margin="10,5,0,5" Click="RadioButton_Click" />
+                <RadioButton Tag="5" GroupName="SearchType" Content="fish + submarine" Margin="10,5,0,5" Click="RadioButton_Click"/>
+            </StackPanel>
+        </GroupBox>
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Height="152" Width="314">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"/>
@@ -10,10 +21,10 @@
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1">
-                <Image x:Name="imageView1" Source="Images/einstein.bmp"/>
+                <Image x:Name="imageView1"/>
             </Border>
             <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1">
-                <Image x:Name="imageView2" Source="Images/marilyn.bmp"/>
+                <Image x:Name="imageView2"/>
             </Border>
         </Grid>
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,172,0,0" Height="152" Width="314">
@@ -29,6 +40,30 @@
                 <Image x:Name="imageView4"/>
             </Border>
         </Grid>
-        <Button x:Name="buttonStart" Content="Start" HorizontalAlignment="Left" Margin="329,304,0,0" VerticalAlignment="Top" Width="75" Click="ButtonStart_Click"/>
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="330,172,0,0" Height="152" Width="152">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1">
+                <Image x:Name="imageView5"/>
+            </Border>
+        </Grid>
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,335,0,0" Height="98" Width="472">
+            <Label Content="LFP Iterations:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-5,0,0,0"/>
+            <t:ByteUpDown x:Name="byteUpDownLpfIterations" HorizontalAlignment="Left" VerticalAlignment="Top" Width="60" Margin="90,3,0,0" Value="10"/>
+            <Label Content="HPF Iterations:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-5,32,0,0"/>
+            <t:ByteUpDown x:Name="byteUpDownHpfIterations" HorizontalAlignment="Left" VerticalAlignment="Top" Width="60" Margin="90,36,0,0" Value="10"/>
+            <Label Content="LFP Dimension:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="156,0,0,0"/>
+            <t:ByteUpDown x:Name="byteUpDownLpfDimension" HorizontalAlignment="Left" VerticalAlignment="Top" Width="60" Margin="253,3,0,0" Value="5" Increment="2"/>
+            <Label Content="HPF Dimension:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="156,32,0,0"/>
+            <t:ByteUpDown x:Name="byteUpDownHpfDimension" HorizontalAlignment="Left" VerticalAlignment="Top" Width="60" Margin="253,36,0,0" Value="5" Increment="2"/>
+            <Label Content="HPF Brightness:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="315,0,0,0"/>
+            <t:DecimalUpDown x:Name="decimalUpDownHpfBrightness" HorizontalAlignment="Left" VerticalAlignment="Top" Width="60" Margin="411,3,0,0" Value="2" Increment="0.1"/>
+            <Label Content="HPF Luminosity:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="314,32,0,0"/>
+            <t:ByteUpDown x:Name="byteUpDownHpfLuminosity" HorizontalAlignment="Left" VerticalAlignment="Top" Width="60" Margin="411,36,0,0" Value="10" Increment="10"/>            
+            <ProgressBar x:Name="progressBar" HorizontalAlignment="Left" Height="10" Margin="0,80,0,0" VerticalAlignment="Top" Width="313" Visibility="Hidden"/>
+            <Button x:Name="buttonStart" Content="Start" HorizontalAlignment="Left" Margin="328,67,0,0" VerticalAlignment="Top" Width="143" Click="ButtonStart_Click" FontSize="14"/>
+        </Grid>
+
     </Grid>
 </Window>
