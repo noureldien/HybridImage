@@ -79,7 +79,7 @@ namespace HybridImage
 
             imageView3.Source = null;
             imageView4.Source = null;
-            imageView5.Source = null;
+            imageView5.Source = imageView6.Source = imageView7.Source = imageView8.Source = null;
 
             lpfIterations = (int)byteUpDownLpfIterations.Value;
             hpfIterations = (int)byteUpDownHpfIterations.Value;
@@ -115,33 +115,33 @@ namespace HybridImage
             switch (selectedPairs)
             {
                 case 1:
-                    bitmap1 = HybridImage.Properties.Resources.marilyn;
-                    bitmap2 = HybridImage.Properties.Resources.einstein;
-                    break;
-
-                case 2:
-                    bitmap1 = HybridImage.Properties.Resources.einstein;
-                    bitmap2 = HybridImage.Properties.Resources.marilyn;
-                    break;
-
-                case 3:
-                    bitmap1 = HybridImage.Properties.Resources.motorcycle;
-                    bitmap2 = HybridImage.Properties.Resources.bicycle;
-                    break;
-
-                case 4:
-                    bitmap1 = HybridImage.Properties.Resources.bicycle;
-                    bitmap2 = HybridImage.Properties.Resources.motorcycle;
-                    break;
-
-                case 5:
                     bitmap1 = HybridImage.Properties.Resources.dog;
                     bitmap2 = HybridImage.Properties.Resources.cat;
                     break;
 
-                case 6:
+                case 2:
                     bitmap1 = HybridImage.Properties.Resources.cat;
                     bitmap2 = HybridImage.Properties.Resources.dog;
+                    break;
+
+                case 3:
+                    bitmap1 = HybridImage.Properties.Resources.marilyn;
+                    bitmap2 = HybridImage.Properties.Resources.einstein;
+                    break;
+
+                case 4:
+                    bitmap1 = HybridImage.Properties.Resources.einstein;
+                    bitmap2 = HybridImage.Properties.Resources.marilyn;
+                    break;
+
+                case 5:
+                    bitmap1 = HybridImage.Properties.Resources.motorcycle;
+                    bitmap2 = HybridImage.Properties.Resources.bicycle;
+                    break;
+
+                case 6:
+                    bitmap1 = HybridImage.Properties.Resources.bicycle;
+                    bitmap2 = HybridImage.Properties.Resources.motorcycle;
                     break;
 
                 case 7:
@@ -184,16 +184,9 @@ namespace HybridImage
             double progressValue = 0.0;
             double progressStep = 100 / (double)(lpfIterations + hpfIterations + 1);
             double[,] g1, g2;
-            //g1 = g2 = new double[,]
-            //{
-            //    { 0.002, 0.013, 0.022, 0.013, 0.002 },
-            //    { 0.013, 0.060, 0.098, 0.060, 0.013 },
-            //    { 0.022, 0.098, 0.162, 0.098, 0.022 },
-            //    { 0.013, 0.060, 0.098, 0.060, 0.013 },
-            //    { 0.002, 0.013, 0.022, 0.013, 0.002 },
-            //};
-            g1 = GaussianKernel(5, 20);
-            g2 = GaussianKernel(13, 10);
+
+            g1 = GaussianMatrix(lpfDimension, 10);
+            g2 = GaussianMatrix(hpfDimension, 10);
 
             image1 = BitmapToByteArray(bitmap1);
             image2 = BitmapToByteArray(bitmap2);
@@ -222,26 +215,27 @@ namespace HybridImage
             // adding h = i1 + i2
             byte[, ,] h = Add(i1, i2);
 
+
             Finish(i1, i2, h);
         }
 
-        private double[,] GaussianKernel(int length, double weight)
+        private double[,] GaussianMatrix(int length, double weight)
         {
-            double[,] kernel = new double[length, length];
-            double sumTotal = 0;
+            double[,] matrix = new double[length, length];
+            double total = 0;
 
-            int kernelRadius = length / 2;
+            int dimension = length / 2;
             double distance = 0;
 
-            double calculatedEuler = 1.0 / (2.0 * Math.PI * Math.Pow(weight, 2));
+            double euler = 1.0 / (2.0 * Math.PI * Math.Pow(weight, 2));
 
-            for (int filterY = -kernelRadius; filterY <= kernelRadius; filterY++)
+            for (int y = -dimension; y <= dimension; y++)
             {
-                for (int filterX = -kernelRadius; filterX <= kernelRadius; filterX++)
+                for (int x = -dimension; x <= dimension; x++)
                 {
-                    distance = ((filterX * filterX) + (filterY * filterY)) / (2 * (weight * weight));
-                    kernel[filterY + kernelRadius, filterX + kernelRadius] = calculatedEuler * Math.Exp(-distance);
-                    sumTotal += kernel[filterY + kernelRadius, filterX + kernelRadius];
+                    distance = ((x * x) + (y * y)) / (2 * (weight * weight));
+                    matrix[y + dimension, x + dimension] = euler * Math.Exp(-distance);
+                    total += matrix[y + dimension, x + dimension];
                 }
             }
 
@@ -249,11 +243,11 @@ namespace HybridImage
             {
                 for (int x = 0; x < length; x++)
                 {
-                    kernel[y, x] = kernel[y, x] * (1.0 / sumTotal);
+                    matrix[y, x] = matrix[y, x] * (1.0 / total);
                 }
             }
 
-            return kernel;
+            return matrix;
         }
 
         private byte[, ,] GaussianFilter(byte[, ,] source, double[,] kernel)
@@ -305,14 +299,26 @@ namespace HybridImage
             int height = data1.GetLength(0);
             int width = data1.GetLength(1);
             byte[, ,] result = new byte[height, width, 3];
+            int[] p = new int[3];
 
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    result[y, x, 0] = (byte)(125 + data1[y, x, 0] - data2[y, x, 0]);
-                    result[y, x, 1] = (byte)(125 + data1[y, x, 1] - data2[y, x, 1]);
-                    result[y, x, 2] = (byte)(125 + data1[y, x, 2] - data2[y, x, 2]);
+                    for (int z = 0; z < p.Length; z++)
+                    {
+                        p[z] = 125 + data1[y, x, z] - data2[y, x, z];
+
+                        if (p[z] > 255)
+                        {
+                            p[z] = 255;
+                        }
+                        if (p[z] < 0)
+                        {
+                            p[z] = 0;
+                        }
+                        result[y, x, z] = (byte)p[z];
+                    }
                 }
             }
 
@@ -410,6 +416,23 @@ namespace HybridImage
             return result;
         }
 
+        [Obsolete("Under Development", true)]
+        private void Scaling(byte[, ,] data)
+        {
+            int height = data.GetLength(0);
+            int width = data.GetLength(1);
+
+            int h1 = height / 2;
+            int w1 = width / 2;
+            int h2 = height / 4;
+            int w2 = width / 4;
+            int margin = 10;
+
+            System.Drawing.Bitmap original = ByteArrayToBitmap(data);
+            System.Drawing.Bitmap scaleOne = new System.Drawing.Bitmap(original, new System.Drawing.Size(w1, h1));
+            System.Drawing.Bitmap scaleTwo = new System.Drawing.Bitmap(original, new System.Drawing.Size(w2, h2));
+        }
+
         private byte[, ,] BitmapToByteArray(System.Drawing.Bitmap bitmap)
         {
             int width = bitmap.Width;
@@ -473,24 +496,24 @@ namespace HybridImage
 
         private void Finish(byte[, ,] i1, byte[, ,] i2, byte[, ,] h)
         {
-            this.Dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(new Action(() =>
             {
                 buttonStart.Content = "Start";
                 buttonStart.IsEnabled = true;
                 imageView3.Source = ByteArrayToBitmapSource(i1);
                 imageView4.Source = ByteArrayToBitmapSource(i2);
-                imageView5.Source = ByteArrayToBitmapSource(h);
+                imageView5.Source = imageView6.Source = imageView7.Source = imageView8.Source = ByteArrayToBitmapSource(h);
                 progressBar.Value = 0;
                 progressBar.Visibility = System.Windows.Visibility.Hidden;
-            });
+            }));
         }
 
         private void UpdateProgressBar(double value)
         {
-            this.Dispatcher.Invoke(() =>
+            this.Dispatcher.Invoke(new Action(() =>
             {
                 progressBar.Value = value;
-            });
+            }));
         }
 
         private void DisposeObjects()
