@@ -25,18 +25,6 @@ namespace HybridImage
         #region Variables
 
         /// <summary>
-        /// Names of image-pairs. 5 pairs (10 image in total).
-        /// </summary>
-        private string[][] imagePairs = new string[][]
-        {
-            new string[] {"marilyn.bmp", "einstein.bmp" },
-            new string[] {"motorcycle.bmp", "bicycle.bmp" },
-            new string[] {"dog.bmp", "cat.bmp" },
-            new string[] {"bird.bmp", "plane.bmp" },
-            new string[] {"fish.bmp", "submarine.bmp" },
-        };
-
-        /// <summary>
         /// Low-pass filter (smooth image that will appear from a far distance).
         /// </summary>
         private byte[, ,] image1;
@@ -47,7 +35,7 @@ namespace HybridImage
         /// <summary>
         /// Which image-pair is selected.
         /// </summary>
-        private int selectedPairsIndex;
+        private int selectedPairs;
         /// <summary>
         /// Thread to do template convolution under it to release pressure from UI thread.
         /// </summary>
@@ -58,8 +46,6 @@ namespace HybridImage
         private int hpfIterations;
         private int lpfDimension;
         private int hpfDimension;
-        private decimal hpfBrightness;
-        private int hpfLuminosity;
 
         #endregion
 
@@ -99,8 +85,6 @@ namespace HybridImage
             hpfIterations = (int)byteUpDownHpfIterations.Value;
             lpfDimension = (int)byteUpDownLpfDimension.Value;
             hpfDimension = (int)byteUpDownHpfDimension.Value;
-            hpfBrightness = (decimal)decimalUpDownHpfBrightness.Value;
-            hpfLuminosity = (int)byteUpDownHpfLuminosity.Value;
 
             // search thread
             ThreadStart threadStart = new ThreadStart(Convolution);
@@ -111,8 +95,7 @@ namespace HybridImage
         private void RadioButton_Click(object sender, RoutedEventArgs e)
         {
             string tag = ((RadioButton)sender).Tag.ToString();
-            int choise = int.Parse(tag);
-            selectedPairsIndex = choise - 1;
+            selectedPairs = int.Parse(tag);
             LoadImage();
         }
 
@@ -122,15 +105,69 @@ namespace HybridImage
 
         private void Initialize()
         {
+            progressBar.Visibility = System.Windows.Visibility.Hidden;
+            selectedPairs = 1;
             LoadImage();
         }
 
         private void LoadImage()
         {
-            string source1 = String.Format(@"Images/{0}", imagePairs[selectedPairsIndex][0]);
-            string source2 = String.Format(@"Images/{0}", imagePairs[selectedPairsIndex][1]);
-            bitmap1 = new System.Drawing.Bitmap(source1);
-            bitmap2 = new System.Drawing.Bitmap(source2);
+            switch (selectedPairs)
+            {
+                case 1:
+                    bitmap1 = HybridImage.Properties.Resources.marilyn;
+                    bitmap2 = HybridImage.Properties.Resources.einstein;
+                    break;
+
+                case 2:
+                    bitmap1 = HybridImage.Properties.Resources.einstein;
+                    bitmap2 = HybridImage.Properties.Resources.marilyn;
+                    break;
+
+                case 3:
+                    bitmap1 = HybridImage.Properties.Resources.motorcycle;
+                    bitmap2 = HybridImage.Properties.Resources.bicycle;
+                    break;
+
+                case 4:
+                    bitmap1 = HybridImage.Properties.Resources.bicycle;
+                    bitmap2 = HybridImage.Properties.Resources.motorcycle;
+                    break;
+
+                case 5:
+                    bitmap1 = HybridImage.Properties.Resources.dog;
+                    bitmap2 = HybridImage.Properties.Resources.cat;
+                    break;
+
+                case 6:
+                    bitmap1 = HybridImage.Properties.Resources.cat;
+                    bitmap2 = HybridImage.Properties.Resources.dog;
+                    break;
+
+                case 7:
+                    bitmap1 = HybridImage.Properties.Resources.bird;
+                    bitmap2 = HybridImage.Properties.Resources.plane;
+                    break;
+
+                case 8:
+                    bitmap1 = HybridImage.Properties.Resources.plane;
+                    bitmap2 = HybridImage.Properties.Resources.bird;
+                    break;
+
+                case 9:
+                    bitmap1 = HybridImage.Properties.Resources.fish;
+                    bitmap2 = HybridImage.Properties.Resources.submarine;
+                    break;
+
+                case 10:
+                    bitmap1 = HybridImage.Properties.Resources.submarine;
+                    bitmap2 = HybridImage.Properties.Resources.fish;
+                    break;
+
+                default:
+                    break;
+            }
+
             imageView1.Source = BitmapToBitmapSource(bitmap1);
             imageView2.Source = BitmapToBitmapSource(bitmap2);
         }
@@ -145,7 +182,7 @@ namespace HybridImage
             // 1-G2: gaussian high-pass filter
 
             double progressValue = 0.0;
-            double progressStep = 100 / (double)(lpfIterations + hpfIterations + 3);
+            double progressStep = 100 / (double)(lpfIterations + hpfIterations + 1);
             double[,] g1, g2;
             //g1 = g2 = new double[,]
             //{
@@ -178,10 +215,7 @@ namespace HybridImage
                 progressValue += progressStep;
                 UpdateProgressBar(progressValue);
             }
-            i2 = Increment(i2, hpfLuminosity);
             i2 = Subtract(image2, i2);
-            i2 = Increment(i2, (int)hpfBrightness);
-            //i2 = Brightness(i2, hpfBrightness);
             progressValue += progressStep;
             UpdateProgressBar(progressValue);
 
@@ -320,7 +354,7 @@ namespace HybridImage
 
             return data;
         }
-        
+
         private byte[, ,] Increment(byte[, ,] data, int factor)
         {
             int height = data.GetLength(0);
