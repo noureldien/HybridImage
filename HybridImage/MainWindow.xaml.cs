@@ -178,9 +178,10 @@ namespace HybridImage
                 progressValue += progressStep;
                 UpdateProgressBar(progressValue);
             }
-            i2 = Subtract(image2, i2);
             i2 = Increment(i2, hpfLuminosity);
-            i2 = Brightness(i2, hpfBrightness);
+            i2 = Subtract(image2, i2);
+            i2 = Increment(i2, (int)hpfBrightness);
+            //i2 = Brightness(i2, hpfBrightness);
             progressValue += progressStep;
             UpdateProgressBar(progressValue);
 
@@ -275,9 +276,9 @@ namespace HybridImage
             {
                 for (int x = 0; x < width; x++)
                 {
-                    result[y, x, 0] = (byte)(Math.Abs(data1[y, x, 0] - data2[y, x, 0]));
-                    result[y, x, 1] = (byte)(Math.Abs(data1[y, x, 1] - data2[y, x, 1]));
-                    result[y, x, 2] = (byte)(Math.Abs(data1[y, x, 2] - data2[y, x, 2]));
+                    result[y, x, 0] = (byte)(125 + data1[y, x, 0] - data2[y, x, 0]);
+                    result[y, x, 1] = (byte)(125 + data1[y, x, 1] - data2[y, x, 1]);
+                    result[y, x, 2] = (byte)(125 + data1[y, x, 2] - data2[y, x, 2]);
                 }
             }
 
@@ -319,7 +320,7 @@ namespace HybridImage
 
             return data;
         }
-
+        
         private byte[, ,] Increment(byte[, ,] data, int factor)
         {
             int height = data.GetLength(0);
